@@ -54,6 +54,7 @@ def morse_signal(text):
         result.append(signal_map[letter])
     return ''.join(result)
 
-text = sys.argv[1]
-print(morse(text))
-print(morse_signal(text))
+if __name__ == '__main__':
+    text = sys.argv[1]
+    print(morse(text))
+    print(morse_signal(text))
