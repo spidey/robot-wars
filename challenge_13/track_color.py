@@ -7,19 +7,24 @@ import time
 from enum import Enum
 
 class Color(Enum):
-    NO_COLOR=0
     RED=1
     YELLOW=2
     GREEN=3
     TURQUOISE=4
     BLUE=5
+    BLACK=6
+    WHITE=7
+    MAGENTA=8
 
 color_to_rgb = {
     Color.RED: [255, 0, 0],
     Color.YELLOW: [255, 255, 0],
     Color.GREEN: [0, 255, 0],
+    Color.TURQUOISE: [0, 255, 255],
     Color.BLUE: [0, 0, 255],
-    Color.TURQUOISE: [0, 255, 255]
+    Color.BLACK: [0, 0, 0],
+    Color.WHITE: [255, 255, 255],
+    Color.MAGENTA: [255, 0, 255],
 }
 
 class LEDController:
@@ -33,7 +38,7 @@ class LEDController:
             GPIO.setup(pin, GPIO.OUT)
 
     def set_rgb(self, color):
-        led_status = map(lambda num: num > 0, color_to_rgb[color])
+        led_status = list(map(lambda num: num > 0, color_to_rgb[color]))
         for index, pin in enumerate(LEDController.LED_PINS):
             GPIO.output(pin, led_status[index])
 
@@ -46,14 +51,17 @@ def color_to_hsv_range(color):
     lower_bound = hue - delta if hue - delta >= 0 else 0
     return (np.array([lower_bound, 50, 50]), np.array([upper_bound, 255, 255]))
 
-cap = cv.VideoCapture(0)
+cap = cv.VideoCapture(1)
 controller = LEDController()
 controller.setup()
 while(1):
     # Take each frame
     _, frame = cap.read()
+    #cv.imshow('frame', frame)
+    #cv.waitKey()
     frame_w, frame_h, _ = frame.shape
-    threshold = frame_w*frame_h*0.1        
+    threshold = frame_w*frame_h*0.2
+    found = False
     for color in color_to_rgb:
         # Convert BGR to HSV
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
@@ -64,5 +72,9 @@ while(1):
         if np.sum(mask == 255) > threshold:
             print(color)
             controller.set_rgb(color)
-            time.sleep(1)
+            found = True
+            break
+    if not found:
+        print('No color found')
+        controller.set_rgb(Color.BLACK)
 
