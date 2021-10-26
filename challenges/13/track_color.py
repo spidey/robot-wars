@@ -51,7 +51,7 @@ def color_to_hsv_range(color):
     lower_bound = hue - delta if hue - delta >= 0 else 0
     return (np.array([lower_bound, 50, 50]), np.array([upper_bound, 255, 255]))
 
-cap = cv.VideoCapture(1)
+cap = cv.VideoCapture(0)
 controller = LEDController()
 controller.setup()
 while(1):
