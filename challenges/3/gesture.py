@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # TechVidvan hand Gesture Recognizer
 
 # import necessary packages
