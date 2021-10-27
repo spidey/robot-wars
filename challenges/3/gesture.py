@@ -28,16 +28,26 @@ f.close()
 classNames = [ c.split(",") for c in classNames]
 print(classNames)
 
-def test():
-    print("excecuted")
 
-methodDict = {
-    "stop":test#car.run
-}
+
+def run():
+    print("running")
+
+def stop():
+    print("stopped")
+
+def reverse():
+    print("reversed")
 
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
 #car = motor_init()
+
+methodDict = {
+    "stop":stop,
+    "run": run,
+    "reverse":reverse
+}
 
 while True:
     # Read each frame from the webcam
