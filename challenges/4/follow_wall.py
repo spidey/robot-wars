@@ -132,6 +132,7 @@ try:
         elif LeftSensorValue and RightSensorValue:
             time.sleep(0.42)
             brake()
+            time.sleep(0.02)
             if status == 1:
                 spin_right()
                 while GPIO.input(FollowSensorRight):
