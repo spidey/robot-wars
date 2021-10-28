@@ -17,15 +17,15 @@ class Color(Enum):
     MAGENTA=8
 
 color_to_rgb = {
-    Color.RED: [255, 0, 0],
-    Color.YELLOW: [255, 255, 0],
-    Color.GREEN: [0, 255, 0],
-    Color.TURQUOISE: [0, 255, 255],
-    Color.BLUE: [0, 0, 255],
-    Color.BLACK: [0, 0, 0],
-    Color.WHITE: [255, 255, 255],
-    Color.MAGENTA: [255, 0, 255],
-}
+        Color.RED: [255, 0, 0],
+        Color.YELLOW: [255, 255, 0],
+        Color.GREEN: [0, 255, 0],
+        Color.TURQUOISE: [0, 255, 255],
+        Color.BLUE: [0, 0, 255],
+        Color.BLACK: [0, 0, 0],
+        Color.WHITE: [255, 255, 255],
+        Color.MAGENTA: [255, 0, 255],
+        }
 
 class LEDController:
     LED_PINS = [22, 27, 24]
@@ -54,27 +54,27 @@ def color_to_hsv_range(color):
 cap = cv.VideoCapture(0)
 controller = LEDController()
 controller.setup()
-while(1):
-    # Take each frame
-    _, frame = cap.read()
-    #cv.imshow('frame', frame)
-    #cv.waitKey()
-    frame_w, frame_h, _ = frame.shape
-    threshold = frame_w*frame_h*0.2
-    found = False
-    for color in color_to_rgb:
-        # Convert BGR to HSV
-        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-        # define range of blue color in HSV
-        hsv_range = color_to_hsv_range(color)
-        # Threshold the HSV image to get only pixel with the filtered color
-        mask = cv.inRange(hsv, hsv_range[0], hsv_range[1])
-        if np.sum(mask == 255) > threshold:
-            print(color)
-            controller.set_rgb(color)
-            found = True
-            break
-    if not found:
-        print('No color found')
-        controller.set_rgb(Color.BLACK)
-
+try:
+    while(1):
+        # Take each frame
+        _, frame = cap.read()
+        frame_w, frame_h, _ = frame.shape
+        threshold = frame_w*frame_h*0.2
+        found = False
+        for color in color_to_rgb:
+            # Convert BGR to HSV
+            hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+            # define range of blue color in HSV
+            hsv_range = color_to_hsv_range(color)
+            # Threshold the HSV image to get only pixel with the filtered color
+            mask = cv.inRange(hsv, hsv_range[0], hsv_range[1])
+            if np.sum(mask == 255) > threshold:
+                print(color)
+                controller.set_rgb(color)
+                found = True
+                break
+        if not found:
+            print('No color found')
+            controller.set_rgb(Color.BLACK)
+except KeyboardInterrupt:
+    cap.release()
